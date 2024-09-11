@@ -45,6 +45,7 @@ class Player:
         if self.total >21:
             option='2'
         else:
+            print("=" * 20)
             print("kolej gracza {}\n1:dobierz karte\n2:pasuj".format(self.name))
             option = input('wybierz opcje: ')
 
@@ -55,7 +56,8 @@ class Player:
         elif option=='1':
             self.Pick_Card(tally)
         else:
-            print('dupa naucz sie czytac debilu - tracisz kolejke')
+            print('Cos poszło nie tak')
+            return self.MakeDecision(tally)
 
     def Pick_Card(self,deck):
         card=random.choice(deck)
@@ -101,7 +103,6 @@ def LetsGame(Pl_list, Cardtalia):
     while Player.PlayerTurn >0:
         for player in Pl_list:
             if player.isActive:
-                print("="*20)
                 player.MakeDecision(Cardtalia)
     print('koniec gry')
     Player.comparePlayers(Pl_list)
