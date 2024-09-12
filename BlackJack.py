@@ -28,27 +28,32 @@ class Player:
                 print(winner[len(winner)-b][0])
                 b+=1
         else:
-            print('zwycieza gracz {} z liczba punktow {}'.format(winner[len(winner)-1][0],winner[len(winner)-1][1]))
+            print('zwycieza gracz {} z liczba punktow {}'.format(winner[len(winner)-1][0],abs(winner[len(winner)-1][1])))
 
-    def __init__(self,name):
+    def __init__(self,name,isHuman):
         self.hand=[]
         self.name=name
         self.turn=Player.PlayerTurn
         self.total=0
+        self.isHuman=isHuman
         Player.PlayerTurn+=1
         listOfPlayers.append(self)
         self.isActive=True
 
     def MakeDecision(self,tally):
+        print("=" * 20)
         self.Count_Hand()
-        option=0
         if self.total >21:
             option='2'
         else:
-            print("=" * 20)
             print("kolej gracza {}\n1:dobierz karte\n2:pasuj".format(self.name))
-            option = input('wybierz opcje: ')
-
+            if self.isHuman:
+                option = input('wybierz opcje: ')
+            else:
+                if self.total < 17:
+                    option='1'
+                else:
+                    option='2'
         if option == "2":
             print("gracz {} spasowal.".format(self.name))
             self.isActive = False
@@ -104,28 +109,29 @@ def LetsGame(Pl_list, Cardtalia):
         for player in Pl_list:
             if player.isActive:
                 player.MakeDecision(Cardtalia)
-    print('koniec gry')
+    print('='*20,'\nkoniec gry')
     Player.comparePlayers(Pl_list)
 
-def utworzGracza(a,imionaGraczy):
+def utworzGracza(a,imionaGraczy,isCroupier):
     imie = input('podaj nazwe gracza numer {}: '.format(a + 1))
     try:
         if imie in imionaGraczy:
             raise exception('')
-        exec("{}=Player('{}')".format(imie,imie))
+        exec("{}=Player('{}',True)".format(imie,imie))
         imionaGraczy.append(imie)
-
     except:
         print('cos poszlo nie tak, podaj inne imie')
-        utworzGracza(a,imionaGraczy)
+        utworzGracza(a,imionaGraczy,isCroupier)
+    if isCroupier==False:
+        Croupier = Player('krupier', False)
 
-def Create_Players(anop):
+
+def Create_Players(anop,isCroupier):
     imionaGraczy=[]
     for a in range(anop):
-        utworzGracza(a,imionaGraczy)
+        utworzGracza(a,imionaGraczy,isCroupier)
 
 def Set_Player_Number():
-    numberOfPlayers=''
     numberOfPlayers = input('Podaj liczbę graczy: ')
     try:
         int(numberOfPlayers)
@@ -135,8 +141,11 @@ def Set_Player_Number():
         elif int(numberOfPlayers) >4:
             print("za duza liczba graczy")
             return Set_Player_Number()
-        elif (int(numberOfPlayers) <=4) and (int(numberOfPlayers) >=1):
-            return  int(numberOfPlayers)
+        elif (int(numberOfPlayers) <=4) and (int(numberOfPlayers) >=2):
+            return  [int(numberOfPlayers),True]
+        elif int(numberOfPlayers) ==1:
+            return [int(numberOfPlayers),False]
+
     except:
         print("cos poszlo nie tak")
         return Set_Player_Number()
@@ -147,5 +156,5 @@ listOfPlayers = []
 talia=create_deck()
 print("Witaj w grze BlackJack")
 nop=Set_Player_Number()
-Create_Players(nop)
+Create_Players(*nop)
 LetsGame(listOfPlayers, talia)
