@@ -116,14 +116,14 @@ def utworzGracza(a,imionaGraczy,isCroupier):
     imie = input('podaj nazwe gracza numer {}: '.format(a + 1))
     try:
         if imie in imionaGraczy:
-            raise exception('')
-        exec("{}=Player('{}',True)".format(imie,imie))
+            raise exception('The same name')
+        Player(imie,True)
         imionaGraczy.append(imie)
     except:
         print('cos poszlo nie tak, podaj inne imie')
         utworzGracza(a,imionaGraczy,isCroupier)
     if isCroupier==False:
-        Croupier = Player('krupier', False)
+        Player('krupier', False)
 
 
 def Create_Players(anop,isCroupier):
